@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CSS Template</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+
+  <!-- enlace a código CSS de Leaflet en la cabecera -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+  <!-- enlace a JavaScript de Leaflet (justo tras CSS) -->
+  <script src="https://unpkg.com/leaflet@1.5.0/dist/leaflet.js"
+   integrity="sha512-3Wcxp7F9bV2pl+MBgrL6Pz7AJASLpemmQPIiPA0lDs3ImF0z4JuuMIBPeirLbgIuhfH2gJyGWZjvm6M+Zr7L6Q=="
+   crossorigin=""></script>
+</head>
+
+<body>
+
+<header>
+  <h2>Mario Lain De Pedro</h2>
+</header>
+
+<section>
+  <nav>
+    <ul>
+      <li><a href="Index.html">Pantalla Principal</a></li>
+      <li><a href="visorSencillo.html">Visor Sencillo</a></li>
+      <li><a href="visorCompleto.html">Visor Completo</a></li>
+    </ul>
+  </nav>
+
+  <article>
+    <h1>Visor Sencillo</h1>
+    <div id="bloque_mapa">
+
+
+    </div>
+  </article>
+</section>
+
+<footer>
+  <p>Footer</p>
+</footer>
+
+</body>
+
+<script>
+// definimos el mapa como una varianble y le ajustamos dónde lo queremos ver
+    var mi_mapa = L.map('bloque_mapa').setView([40, -2], 5);
+
+// añadimos mapa de fondo
+    L.tileLayer(
+    // dirección de las tiles
+    'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+   // propiedades
+   { maxZoom: 10,  // zoom máximo 10
+    // Líneas de atribución
+        id: 'mapbox.streets'
+    }).addTo(mi_mapa);
+
+    var stamen_tms = L.tileLayer(
+      'http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png', { // URL con tiles
+          // texto de atribución - IMPORTANTE
+          maxZoom: 20  // zoom máximo
+          });
+      stamen_tms.addTo(mi_mapa);
+
+      var Thunderforest_Outdoors = L.tileLayer('https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey={apikey}', {
+      	apikey: '<your apikey>',
+      	maxZoom: 22
+      });
+      Thunderforest_Outdoors.addTo(mi_mapa);
+
+    //añadir capa de carreteras
+    var OpenMapSurfer_Roads = L.tileLayer('https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png', {
+    	maxZoom: 19,
+    });
+    OpenMapSurfer_Roads.addTo(mi_mapa);
+
+    var PNOA = L.tileLayer.wms('http://www.idee.es/wms/PNOA/PNOA?', {  //URL WMS
+     layers: 'PNOA',          // capa del WMS
+     format: 'image/png',     // tipo de formato
+     transparent: true,       // activa capa alfa/transparente
+     });
+     PNOA.addTo(mi_mapa);         // añadir capa al mapa
+
+
+     var baseMaps = {                  // variable con apartado de mapas base
+       "Thunderforest": Thunderforest_Outdoors,
+       "Stamen": stamen_tms,
+       "Roads": OpenMapSurfer_Roads,
+     };
+
+      var overlayMaps = {              // apartado de capas
+        "Ortotfoto PNOA": PNOA       // elemento a incluir y descripción
+      };
+
+    var capas = L.control.layers(   // variable con control de capas
+      baseMaps,                     // añadiendo capas base
+      overlayMaps,                  // añadiendo capas
+      {collapsed:true});            // control NO desplegado
+    capas.addTo(mi_mapa);           // añadimos control de capas al mapa
+
+    var escala = L.control.scale({position: 'topleft'});
+    escala.addTo(mi_mapa);
+
+
+</script>
+
+</html>
